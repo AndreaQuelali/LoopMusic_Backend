@@ -1,98 +1,109 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# LoopMusic Backend — Guía de instalación y uso
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Esta guía te ayuda a levantar el backend con NestJS, Prisma y MongoDB (Atlas o local), y a probar los endpoints de Autenticación y Canciones.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Requisitos
 
-## Description
+- Node.js 18+
+- NPM 9+ (o PNPM/Yarn si prefieres, adaptando comandos)
+- MongoDB disponible de una de estas formas:
+  - MongoDB Atlas (recomendado para nube)
+  - MongoDB local (puedes usar Docker)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Variables de entorno
 
-## Project setup
+Copia el ejemplo y configura tu conexión a MongoDB y el secreto JWT.
 
 ```bash
-$ npm install
+cp .env.example .env
 ```
 
-## Compile and run the project
+Edita `.env` y define:
+
+```env
+# MongoDB Atlas (ejemplo)
+DATABASE_URL="mongodb+srv://<USER>:<PASS>@<CLUSTER>.mongodb.net/loopmusic?retryWrites=true&w=majority&appName=<APP_NAME>"
+
+# ó MongoDB local
+# DATABASE_URL="mongodb://localhost:27017/loopmusic"
+
+# JWT para firmar tokens (cámbialo en producción)
+JWT_SECRET="change_this_in_production"
+```
+
+Notas para Atlas:
+- En Atlas, habilita tu IP en Network Access.
+- Verifica usuario/contraseña de Database Access.
+
+## Instalación
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install
 ```
 
-## Run tests
+## Prisma (MongoDB)
+
+Regenera el cliente y sincroniza el esquema con la base de datos:
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run prisma:generate
+npm run prisma:push
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Si quieres datos de ejemplo para la página de canciones:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npm run seed
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## Ejecutar el backend
 
-## Resources
+```bash
+# desarrollo (watch)
+npm run start:dev
 
-Check out a few resources that may come in handy when working with NestJS:
+# o una sola vez
+npm run start
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Por defecto, el backend usa `http://localhost:3000` y CORS está habilitado.
 
-## Support
+## Endpoints principales
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+- Auth
+  - POST `/auth/register` — Body JSON: `{ "email": "a@b.com", "username": "user", "password": "Secret123!" }`
+  - POST `/auth/login` — Body JSON: `{ "email": "a@b.com", "password": "Secret123!" }`
+  - Respuesta: `{ user: { id, email, username, createdAt }, token }`
 
-## Stay in touch
+- Songs
+  - GET `/songs` — Lista canciones (de `Song` en MongoDB). Requiere que la base esté accesible. Si no hay datos, usa `npm run seed`.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Estructura relevante
 
-## License
+- `src/auth/` — módulo de autenticación (bcrypt + JWT)
+- `src/songs/` — módulo de canciones (`GET /songs`)
+- `src/prisma/` — `PrismaService` y `PrismaModule`
+- `prisma/schema.prisma` — modelos `User` y `Song` para MongoDB
+- `scripts/seed.ts` — data de ejemplo para canciones
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+## Troubleshooting
+
+- Error 500 en endpoints con mensaje "Internal server error":
+  - Usualmente indica que la base de datos no está accesible. Revisa `.env` y la conexión a MongoDB.
+
+- Error en `prisma db push` similar a "Server selection timeout" (Atlas):
+  - Agrega tu IP en Network Access (Atlas) o habilita acceso desde cualquier IP temporalmente para pruebas.
+  - Verifica `<USER>`, `<PASS>`, `<CLUSTER>` y `<APP_NAME>` en `DATABASE_URL`.
+  - Si tu red bloquea TLS/puertos, prefiere MongoDB local para desarrollo.
+
+- Usar MongoDB local con Docker:
+  - `docker run -d --name loopmusic-mongo -p 27017:27017 mongo:6`
+  - En `.env`: `DATABASE_URL=mongodb://localhost:27017/loopmusic`
+  - Luego: `npm run prisma:generate && npm run prisma:push && npm run seed`
+
+## Integración con Frontend
+
+- El frontend debe apuntar a `REACT_APP_API_URL=http://localhost:3000` (o la URL donde corra el backend).
+- Endpoints usados por el frontend actual: `/auth/register`, `/auth/login`, `/songs`.
+
+---
