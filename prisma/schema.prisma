@@ -1,0 +1,28 @@
+// Prisma schema for MongoDB
+// Docs: https://www.prisma.io/docs/orm/overview/databases/mongodb
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  username  String
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Song {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  artist    String
+  coverUrl  String?
+  audioUrl  String?
+  createdAt DateTime @default(now())
+}
