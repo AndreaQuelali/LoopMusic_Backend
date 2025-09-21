@@ -24,5 +24,12 @@ model Song {
   artist    String
   coverUrl  String?
   audioUrl  String?
+  playCount Int      @default(0)
+  album     String?
+  year      Int?
+  duration  Int?
+  license   String?
+  tags      String[]
+  jamendoId String?  @unique
   createdAt DateTime @default(now())
 }
