@@ -33,3 +33,12 @@ model Song {
   jamendoId String?  @unique
   createdAt DateTime @default(now())
 }
+
+model Mix {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  isPublic    Boolean  @default(false)
+  songIds     String[]
+  createdAt   DateTime @default(now())
+}
