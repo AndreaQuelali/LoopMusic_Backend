@@ -9,4 +9,14 @@ export class SongsController {
   findAll() {
     return this.songs.findAll();
   }
+
+  @Get('top')
+  findTop() {
+    return this.songs.findTop(10);
+  }
+
+  @Get('top-artists')
+  findTopArtists() {
+    return this.songs.findTopArtists(10);
+  }
 }

@@ -15,18 +15,21 @@ async function main() {
         artist: 'Neon Waves',
         coverUrl: 'https://picsum.photos/seed/cover-1/600/400',
         audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',
+        playCount: 1240,
       },
       {
         title: 'Sunset Boulevard',
         artist: 'City Lights',
         coverUrl: 'https://picsum.photos/seed/cover-2/600/400',
         audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',
+        playCount: 980,
       },
       {
         title: 'Ocean Breeze',
         artist: 'Blue Horizon',
         coverUrl: 'https://picsum.photos/seed/cover-3/600/400',
         audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+        playCount: 860,
       },
     ],
   });

@@ -24,6 +24,13 @@ model Song {
   artist    String
   coverUrl  String?
   audioUrl  String?
+  playCount Int      @default(0)
+  album     String?
+  year      Int?
+  duration  Int?
+  license   String?
+  tags      String[]
+  jamendoId String?  @unique
   createdAt DateTime @default(now())
 }
 
@@ -32,6 +39,14 @@ model Favorite {
   userId    String   @db.ObjectId
   songId    String   @db.ObjectId
   createdAt DateTime @default(now())
-
   @@unique([userId, songId])
+}
+
+model Mix {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String
+  description String?
+  isPublic    Boolean  @default(false)
+  songIds     String[]
+  createdAt   DateTime @default(now())
 }

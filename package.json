@@ -17,6 +17,8 @@
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "seed": "ts-node scripts/seed.ts",
+    "import:jamendo": "ts-node scripts/import_jamendo.ts",
+    "cleanup:null-jamendo": "ts-node scripts/cleanup_null_jamendo.ts",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
