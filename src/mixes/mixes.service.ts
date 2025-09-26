@@ -6,16 +6,24 @@ import { CreateMixDto } from './dto/create-mix.dto';
 export class MixesService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll() {
-    return this.prisma.mix.findMany({ orderBy: { createdAt: 'desc' } });
+  async findAll(userId?: string | null) {
+    // If userId provided: return public mixes or owned by user. If not: only public mixes.
+    if (userId) {
+      return this.prisma.mix.findMany({
+        where: { OR: [{ isPublic: true }, { userId }] },
+        orderBy: { createdAt: 'desc' },
+      });
+    }
+    return this.prisma.mix.findMany({ where: { isPublic: true }, orderBy: { createdAt: 'desc' } });
   }
 
-  async create(dto: CreateMixDto) {
+  async create(dto: CreateMixDto, userId: string) {
     if (!dto.name?.trim()) throw new Error('El nombre es requerido');
     const isPublic = !!dto.isPublic;
     const songIds = Array.isArray(dto.songIds) ? dto.songIds.filter(Boolean) : [];
     return this.prisma.mix.create({
       data: {
+        userId,
         name: dto.name.trim(),
         description: dto.description?.trim() || null,
         isPublic,
@@ -24,9 +32,10 @@ export class MixesService {
     });
   }
 
-  async getSongs(mixId: string) {
+  async getSongs(mixId: string, userId?: string | null) {
     const mix = await this.prisma.mix.findUnique({ where: { id: mixId } });
     if (!mix) throw new Error('Mix no encontrado');
+    if (!mix.isPublic && (!mix.userId || mix.userId !== userId)) throw new Error('No autorizado');
     const ids = mix.songIds || [];
     if (ids.length === 0) return [];
     const songs = await this.prisma.song.findMany({ where: { id: { in: ids } } });
@@ -35,14 +44,17 @@ export class MixesService {
     return ids.map(id => byId.get(id)).filter(Boolean);
   }
 
-  async getOne(mixId: string) {
+  async getOne(mixId: string, userId?: string | null) {
     const mix = await this.prisma.mix.findUnique({ where: { id: mixId } });
     if (!mix) throw new Error('Mix no encontrado');
+    if (!mix.isPublic && mix.userId !== userId) throw new Error('No autorizado');
     return mix;
   }
 
-  async addSongs(mixId: string, toAdd: string[]) {
-    const mix = await this.getOne(mixId);
+  async addSongs(mixId: string, toAdd: string[], userId: string) {
+    const mix = await this.prisma.mix.findUnique({ where: { id: mixId } });
+    if (!mix) throw new Error('Mix no encontrado');
+    if (!mix.userId || mix.userId !== userId) throw new Error('No autorizado');
     const current = mix.songIds || [];
     const set = new Set(current);
     const appended: string[] = [];
@@ -52,15 +64,19 @@ export class MixesService {
     return updated;
   }
 
-  async removeSong(mixId: string, songId: string) {
-    const mix = await this.getOne(mixId);
+  async removeSong(mixId: string, songId: string, userId: string) {
+    const mix = await this.prisma.mix.findUnique({ where: { id: mixId } });
+    if (!mix) throw new Error('Mix no encontrado');
+    if (mix.userId !== userId) throw new Error('No autorizado');
     const next = (mix.songIds || []).filter(id => id !== songId);
     const updated = await this.prisma.mix.update({ where: { id: mixId }, data: { songIds: next } });
     return updated;
   }
 
-  async updateOrder(mixId: string, orderedIds: string[]) {
-    const mix = await this.getOne(mixId);
+  async updateOrder(mixId: string, orderedIds: string[], userId: string) {
+    const mix = await this.prisma.mix.findUnique({ where: { id: mixId } });
+    if (!mix) throw new Error('Mix no encontrado');
+    if (mix.userId !== userId) throw new Error('No autorizado');
     const currentSet = new Set(mix.songIds || []);
     // Keep only ids that are already part of the mix; ignore unknowns
     const filtered = orderedIds.filter(id => currentSet.has(id));

@@ -34,8 +34,17 @@ model Song {
   createdAt DateTime @default(now())
 }
 
+model Favorite {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  songId    String   @db.ObjectId
+  createdAt DateTime @default(now())
+  @@unique([userId, songId])
+}
+
 model Mix {
   id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String   @db.ObjectId
   name        String
   description String?
   isPublic    Boolean  @default(false)
