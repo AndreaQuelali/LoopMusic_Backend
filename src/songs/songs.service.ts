@@ -32,4 +32,13 @@ export class SongsService {
       .sort((a, b) => b.totalPlayCount - a.totalPlayCount)
       .slice(0, limit);
   }
+
+  async incrementPlay(id: string) {
+    await this.prisma.song.update({
+      where: { id },
+      data: { playCount: { increment: 1 } },
+      select: { id: true, playCount: true },
+    });
+    return { ok: true };
+  }
 }
