@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Post } from '@nestjs/common';
 import { SongsService } from './songs.service';
 
 @Controller('songs')
@@ -18,5 +18,10 @@ export class SongsController {
   @Get('top-artists')
   findTopArtists() {
     return this.songs.findTopArtists(10);
+  }
+
+  @Post(':id/play')
+  incrementPlay(@Param('id') id: string) {
+    return this.songs.incrementPlay(id);
   }
 }
