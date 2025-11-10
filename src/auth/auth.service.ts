@@ -33,4 +33,24 @@ export class AuthService {
     const token = await this.jwt.signAsync({ sub: user.id, email: user.email });
     return { user: safeUser, token };
   }
+
+  async me(userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { id: true, email: true, username: true, createdAt: true } });
+    return { user };
+  }
+
+  async updateUsername(userId: string, username: string) {
+    const user = await this.prisma.user.update({ where: { id: userId }, data: { username }, select: { id: true, email: true, username: true, createdAt: true } });
+    return { user };
+  }
+
+  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('No autorizado');
+    const ok = await bcrypt.compare(currentPassword, user.password);
+    if (!ok) throw new UnauthorizedException('Contraseña actual incorrecta');
+    const hash = await bcrypt.hash(newPassword, 10);
+    await this.prisma.user.update({ where: { id: userId }, data: { password: hash } });
+    return { ok: true };
+  }
 }

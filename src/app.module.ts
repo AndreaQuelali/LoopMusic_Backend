@@ -5,9 +5,12 @@ import { SongsModule } from './songs/songs.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { MixesModule } from './mixes/mixes.module';
+import { FavoritesModule } from './favorites/favorites.module';
+import { ConfigModule } from '@nestjs/config';
+import { RecentlyModule } from './recently/recently.module';
 
 @Module({
-  imports: [PrismaModule, SongsModule, AuthModule, MixesModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), PrismaModule, SongsModule, AuthModule, MixesModule, FavoritesModule, RecentlyModule],
   controllers: [AppController],
   providers: [AppService],
 })
